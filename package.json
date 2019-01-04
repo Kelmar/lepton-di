@@ -1,0 +1,30 @@
+{
+  "name": "lepton-di",
+  "version": "1.0.0",
+  "description": "A lightweight dependency injection framework for TypeScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kelmar/lepton-di.git"
+  },
+  "keywords": [
+    "js",
+    "javascript",
+    "typescript",
+    "ts",
+    "di",
+    "dependency",
+    "injection",
+    "lepton",
+    "node"
+  ],
+  "author": "Bryce Simonds",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/Kelmar/lepton-di/issues"
+  },
+  "homepage": "https://github.com/Kelmar/lepton-di#readme"
+}
