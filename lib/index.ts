@@ -8,5 +8,6 @@
 export * from "./lifecycle";
 export * from "./decorators";
 export * from "./interfaces";
+export * from "./container";
 
 /* ================================================================================================================= */

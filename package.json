@@ -1,6 +1,6 @@
 {
   "name": "lepton-di",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A lightweight dependency injection framework for TypeScript",
   "main": "src/lib/index.js",
   "types": "src/lib/index.d.ts",
