@@ -1,3 +1,7 @@
-lib
-src/tests
-tests
+/lib
+/src/tests
+/tests
+.vscode
+tsconfig.json
+gulpfile.js
+
