@@ -16,6 +16,8 @@ const fs = require('fs');
 const exists = promisify(fs.exists);
 const mkdir = promisify(fs.mkdir);
 
+var tsProject = tsc.createProject('tsconfig.json');
+
 function clean()
 {
     return delTree('./' + DIST_DIR);
@@ -37,11 +39,9 @@ function copyResources()
 
 function compile()
 {
-    let project = tsc.createProject('tsconfig.json');
-
-    return project
+    return tsProject
         .src()
-        .pipe(project())
+        .pipe(tsProject())
         .js.pipe(dest(DIST_DIR));
 }
 

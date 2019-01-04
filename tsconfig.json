@@ -7,10 +7,7 @@
         "preserveConstEnums": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "sourceMap": true,
-        "outDir": "./dist",
-        "baseUrl": "./src"
+        "sourceMap": true
     },
-    "include": [ "./src/**/*.ts" ],
-    "exclude": [ "node_modules" ]
+    "exclude": [ "dest", "test_out", "node_modules" ]
 }
