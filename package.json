@@ -1,9 +1,9 @@
 {
   "name": "lepton-di",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A lightweight dependency injection framework for TypeScript",
-  "main": "src/index.js",
-  "types": "src/index.d.ts",
+  "main": "src/lib/index.js",
+  "types": "src/lib/index.d.ts",
   "scripts": {
     "build": "gulp build",
     "clean": "gulp clean",
