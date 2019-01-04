@@ -4,8 +4,8 @@
 const assert = require('assert');
 
 import { testFixture, test, testCase, runAllTests } from './decorators';
-import { inject, using, Lifetime } from '../src';
-import { Container } from '../src/container';
+import { inject, using, Lifetime } from '../lib';
+import { Container } from '../lib/container';
 import { isTypeOf } from './utils';
 
 /* ================================================================================================================= */

@@ -4,8 +4,8 @@
 const assert = require('assert');
 
 import { testFixture, test, testCase, runAllTests } from './decorators';
-import { using, Lifetime, IDisposable } from '../src';
-import { Container } from '../src/container';
+import { using, Lifetime, IDisposable } from '../lib';
+import { Container } from '../lib/container';
 
 /* ================================================================================================================= */
 
