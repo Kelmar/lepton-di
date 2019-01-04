@@ -1,6 +1,6 @@
 'use strict';
 
-const DIST_DIR = 'dist';
+const BULID_DIR = 'build';
 
 const { series, parallel } = require('gulp');
 const { src, dest } = require('gulp');
@@ -20,12 +20,12 @@ var tsProject = tsc.createProject('tsconfig.json');
 
 function clean()
 {
-    return delTree('./' + DIST_DIR);
+    return delTree('./' + BULID_DIR);
 }
 
-function makeDistDir()
+function makeBuildDir()
 {
-    let fullName = path.join('./', DIST_DIR);
+    let fullName = path.join('./', BULID_DIR);
 
     return exists(fullName)
         .then(found => found ? Promise.resolve() : mkdir(fullName));
@@ -34,7 +34,7 @@ function makeDistDir()
 function copyResources()
 {
     return src(['src/**/*', '!src/**/*.ts'])
-        .pipe(dest(DIST_DIR));
+        .pipe(dest(BULID_DIR));
 }
 
 function compile()
@@ -42,14 +42,14 @@ function compile()
     return tsProject
         .src()
         .pipe(tsProject())
-        .js.pipe(dest(DIST_DIR));
+        .js.pipe(dest(BULID_DIR));
 }
 
-var build = series(makeDistDir, parallel(copyResources, compile))
+var build = series(makeBuildDir, parallel(copyResources, compile))
 
 function runTests()
 {
-    return src(DIST_DIR + '/tests/index.js', {read: false})
+    return src(BULID_DIR + '/tests/index.js', {read: false})
         .pipe(mocha({ reporter: 'nyan' }));
 }
 
