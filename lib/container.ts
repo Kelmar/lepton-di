@@ -3,7 +3,7 @@
 
 import "reflect-metadata";
 
-import { Type, IRegistrationSyntax, IContainer, IScope } from "./interfaces";
+import { Type, IRegistrationSyntax, IContainer, IScope, identitifier, Constructor } from "./interfaces";
 
 import { Scope } from './scope';
 import { Lifetime } from "./lifecycle";
@@ -14,9 +14,12 @@ import RegistrationInfo from './RegistrationInfo';
 
 class RegistrationSyntax extends RegistrationInfo implements IRegistrationSyntax
 {
-    constructor(readonly target: symbol)
+    constructor(readonly target: identitifier)
     {
         super(target);
+
+        if (!(target instanceof Symbol))
+            this.type = target as Type<any>;
     }
 
     to<T>(type: Type<T>): IRegistrationSyntax
@@ -36,7 +39,7 @@ class RegistrationSyntax extends RegistrationInfo implements IRegistrationSyntax
 
 export class Container implements IContainer
 {
-    private m_maps: Map<symbol, RegistrationInfo>;
+    private m_maps: Map<identitifier, RegistrationInfo>;
     private m_singletonScope: Scope;
 
     constructor()
@@ -51,7 +54,7 @@ export class Container implements IContainer
         this.m_maps = null;
     }
 
-    public register(name: symbol): IRegistrationSyntax
+    public register(name: identitifier): IRegistrationSyntax
     {
         let reg: RegistrationInfo = this.getRegistration(name);
 
@@ -79,7 +82,7 @@ export class Container implements IContainer
 
     // TODO: Hide the items below, they are internal to Lepton
 
-    public getRegistration(name: symbol): RegistrationInfo
+    public getRegistration(name: identitifier): RegistrationInfo
     {
         return this.m_maps.get(name);
     }
