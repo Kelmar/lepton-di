@@ -1,10 +1,16 @@
 # lepton-di
 A lightweight dependency injection framework for TypeScript
 
+## Install
+```bash
+npm install --save lepton-di
+```
 
 ## Quick Example
 
 ```typescript
+import { inject, using, Container } from 'lepton-di';
+
 // Declare an interface
 interface ILogger
 {
