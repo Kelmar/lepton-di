@@ -1,6 +1,7 @@
 /lib
 /src/tests
 /tests
+/scripts
 .vscode
 tsconfig.json
 gulpfile.js
