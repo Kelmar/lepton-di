@@ -4,7 +4,10 @@
   "description": "A lightweight dependency injection framework for TypeScript",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "gulp build",
+    "clean": "gulp clean",
+    "start": "electron ./dist",
+    "test": "gulp test"
   },
   "repository": {
     "type": "git",
@@ -26,5 +29,16 @@
   "bugs": {
     "url": "https://github.com/Kelmar/lepton-di/issues"
   },
-  "homepage": "https://github.com/Kelmar/lepton-di#readme"
+  "homepage": "https://github.com/Kelmar/lepton-di#readme",
+  "devDependencies": {
+    "@types/node": "^10.12.18",
+    "gulp": "^4.0.0",
+    "gulp-mocha": "^6.0.0",
+    "gulp-typescript": "^5.0.0",
+    "mocha": "^5.2.0",
+    "typescript": "^3.2.2"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.12"
+  }
 }
