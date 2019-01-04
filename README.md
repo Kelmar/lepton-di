@@ -141,7 +141,18 @@ scope.buildUp(myWidget);
 
 ## Life Cycles
 
-Lepton has various utilites for managing object lifetimes.
+Lepton has various utilites for managing object lifetimes.  Objects can have one of three lifecycles:
+
+* Transient
+  This is the default lifetime of a registered class.  Transient objects are not managed by the scope, they are simply
+  created and returned.
+
+* Scoped
+  Scoped objects have their lifetimes tied to the life of the scope that created them.  Once the scope is destroied,
+  those objects will also be destroied.
+
+* Singleton
+  A singleton object will be created once per container, which are for the lifetime of the application.
 
 ### Scopes
 
