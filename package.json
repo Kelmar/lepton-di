@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "A lightweight dependency injection framework for TypeScript",
   "main": "build/src/index.js",
+  "types": "bulid/src/index.d.ts",
   "scripts": {
     "build": "gulp build",
     "clean": "gulp clean",
-    "start": "electron ./dist",
     "test": "gulp test"
   },
   "repository": {

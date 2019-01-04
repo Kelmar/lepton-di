@@ -2,7 +2,7 @@
 
 const BULID_DIR = 'build';
 
-const { series, parallel } = require('gulp');
+const { series } = require('gulp');
 const { src, dest } = require('gulp');
 const { promisify } = require('util');
 const { delTree } = require('./scripts/deltree');
@@ -31,21 +31,15 @@ function makeBuildDir()
         .then(found => found ? Promise.resolve() : mkdir(fullName));
 }
 
-function copyResources()
-{
-    return src(['src/**/*', '!src/**/*.ts'])
-        .pipe(dest(BULID_DIR));
-}
-
 function compile()
 {
     return tsProject
         .src()
         .pipe(tsProject())
-        .js.pipe(dest(BULID_DIR));
+        .pipe(dest(BULID_DIR));
 }
 
-var build = series(makeBuildDir, parallel(copyResources, compile))
+var build = series(makeBuildDir, compile)
 
 function runTests()
 {
