@@ -1,7 +1,7 @@
 /* ================================================================================================================= */
 /* ================================================================================================================= */
 
-import { IScope } from "./interfaces";
+import { IScope, identitifier } from "./interfaces";
 
 import { InjectionMetadata } from "./decorators";
 import { INJECTION_METADATA } from "./consts";
@@ -14,11 +14,11 @@ import RegistrationInfo from './RegistrationInfo';
 
 export class Scope implements IScope
 {
-    private m_managed: Map<symbol, any>;
+    private m_managed: Map<identitifier, any>;
 
     constructor(readonly container: Container, readonly managedLifetime: Lifetime, readonly parent?: Scope)
     {
-        this.m_managed = new Map<symbol, any>();
+        this.m_managed = new Map<identitifier, any>();
     }
 
     public dispose(): void
@@ -70,7 +70,7 @@ export class Scope implements IScope
             this.parent.manage(regInfo, target);
     }
 
-    private tryResolve<T>(name: symbol): T
+    private tryResolve<T>(name: identitifier): T
     {
         let rval: T = this.m_managed.get(name);
         
@@ -90,7 +90,7 @@ export class Scope implements IScope
         return target;
     }
 
-    public wireUp<T>(name: symbol, target: T): T
+    public wireUp<T>(name: identitifier, target: T): T
     {
         if (target == null)
             throw new Error("target is null");
@@ -109,7 +109,7 @@ export class Scope implements IScope
         return target;
     }
 
-    public resolve<T>(name: symbol): T
+    public resolve<T>(name: identitifier): T
     {
         let rval: T = this.tryResolve(name);
 

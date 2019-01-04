@@ -1,7 +1,7 @@
 /* ================================================================================================================= */
 /* ================================================================================================================= */
 
-import { Type } from "./interfaces";
+import { Type, identitifier } from "./interfaces";
 import { Lifetime } from "./lifecycle";
 
 /* ================================================================================================================= */
@@ -11,7 +11,7 @@ export default class RegistrationInfo
     public type: Type<any>;
     public lifetime: Lifetime = Lifetime.Transient;
 
-    protected constructor (readonly name: symbol)
+    protected constructor (readonly name: identitifier)
     {
     }
 }

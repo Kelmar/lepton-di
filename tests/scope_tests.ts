@@ -23,7 +23,6 @@ class ScopeTests
         {
             public dispose()
             {
-                console.log("Disposing of Foo object.");
                 disposed = true;
             }
         }
@@ -37,6 +36,26 @@ class ScopeTests
         });
 
         assert.ok(disposed, "dispose() was not called.");
+    }
+
+    @test resolvesClass()
+    {
+        let resolved: boolean = false;
+
+        class Foo
+        {
+            constructor () { resolved = true; }
+        }
+
+        let c = new Container();
+        c.register(Foo).with(Lifetime.Transient);
+
+        using (c.beginScope(), scope =>{
+            let f: Foo = scope.resolve(Foo);
+            assert.ok(f, 'resolve() did not resolve object.');
+        });
+
+        assert.ok(resolved, "resolve() did not call object constructor.");
     }
 }
 

@@ -12,6 +12,17 @@ export interface Type<T>
 
 /* ================================================================================================================= */
 
+export interface Constructor
+{
+    new(...args: any[]): any;
+}
+
+/* ================================================================================================================= */
+
+export type identitifier = symbol | Symbol | Constructor;
+
+/* ================================================================================================================= */
+
 /**
  * Mechanism for releasing resources.
  */
@@ -58,23 +69,23 @@ export interface IResolver
      * @param name The symbol name to wire to.
      * @param target The object to have its properties injected.
      */
-    wireUp<T>(name: symbol, target: T): T;
+    wireUp<T>(name: identitifier, target: T): T;
 
     /**
      * Resolves a new or existing object of the given type.
      *
      * @param name The type to build.
      */
-    resolve<T>(name: symbol): T;
+    resolve<T>(name: identitifier): T;
 }
 
 /* ================================================================================================================= */
 
 export interface IContainer extends IDisposable
 {
-    register(name: symbol): IRegistrationSyntax;
+    register(name: identitifier): IRegistrationSyntax;
 
-    isRegistered(name: symbol): boolean;
+    isRegistered(name: identitifier): boolean;
 
     /**
      * Creates a new lifetime scope.
