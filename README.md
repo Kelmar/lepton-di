@@ -177,3 +177,20 @@ If a class exposes a dispose() method, then Lepton will call this method when th
 
 The using method is a utility method that ensures that an object's dispose method gets called; regardless if an exception
 is thrown or not.
+
+## Resolving
+
+The scope exposes an IResolver interface with the following functions:
+
+### buildUp()
+This will inject properties into an already instantiated object.   This is handy when you have a factory method for a class
+or other means of creating the object outside of the scope.
+
+This method will not add the object to the scope's management.
+
+### wireUp()
+This is similar to build up, but the object needs to be registered; it will also be added to the scope's management list, so
+it will be cleaned up when the scope goes out of context.
+
+### resolve()
+This will resolve a new or existing object from the scope's management.
