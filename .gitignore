@@ -62,3 +62,6 @@ typings/
 
 # Exclude build directory
 src/
+
+# Exclude npm lock file
+package-lock.json
