@@ -1,19 +1,23 @@
 /* ================================================================================================================= */
 /* ================================================================================================================= */
 
-import { Type, identitifier } from "./interfaces";
+import { Factory, identifier, IResolver } from "./interfaces";
 import { Lifetime } from "./lifecycle";
 
 /* ================================================================================================================= */
 
-export default class RegistrationInfo
+export default abstract class RegistrationInfo
 {
-    public type: Type<any>;
-    public lifetime: Lifetime = Lifetime.Transient;
+    /**
+     * null indicates no lifetime scoping rules.
+     */
+    public lifetime: Lifetime = null;
 
-    protected constructor (readonly name: identitifier)
+    protected constructor (readonly name: identifier)
     {
     }
+
+    public abstract build<T>(resolver: IResolver): T;
 }
 
 /* ================================================================================================================= */

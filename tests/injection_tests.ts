@@ -1,12 +1,13 @@
 /* ================================================================================================================= */
 /* ================================================================================================================= */
 
-const assert = require('assert');
+const assert = require("assert");
 
-import { testFixture, test, testCase, runAllTests } from './decorators';
-import { inject, using, Lifetime } from '../lib';
-import { Container } from '../lib/container';
-import { isTypeOf } from './utils';
+import { testFixture, test } from "./decorators";
+import { isTypeOf } from "./utils";
+
+import { inject, using, IContainer, IResolver } from "../lib";
+import { Container } from "../lib/container";
 
 /* ================================================================================================================= */
 
@@ -33,8 +34,8 @@ export class InjectTests
         }
 
         let c = new Container();
-        c.register(IBar).to(Bar);
-        c.register(IFoo).to(Foo);
+        c.register(IBar).toClass(Bar);
+        c.register(IFoo).toClass(Foo);
 
         using(c.beginScope(), scope =>
         {
@@ -56,15 +57,14 @@ export class InjectTests
 
             public test()
             {
-                
                 assert.ok(this.bar);
                 assert.ok(isTypeOf(this.bar, Bar));
             }
         }
 
         let c = new Container();
-        c.register(IBar).to(Bar);
-        c.register(IFoo).to(Foo);
+        c.register(IBar).toClass(Bar);
+        c.register(IFoo).toClass(Foo);
 
         using(c.beginScope(), scope =>
         {
@@ -72,6 +72,61 @@ export class InjectTests
             assert.ok(f);
             f.test();
         });
+    }
+
+    @test
+    public injectsContainer()
+    {
+        let resolved: boolean = false;
+        let c: IContainer;
+
+        class Foo
+        {
+            constructor(@inject(IContainer) container: IContainer)
+            {
+                resolved = container === c;
+            }
+        }
+
+        c = new Container();
+        c.register(IFoo).toClass(Foo);
+
+        using(c.beginScope(), scope =>
+        {
+            let f: Foo = scope.resolve(IFoo);
+
+            assert.ok(f);
+        });
+
+        assert.ok(resolved, "Container did not resolve to itself.");
+    }
+
+    @test
+    public injectsResolver()
+    {
+        let resolved: boolean = false;
+        let r: IResolver;
+
+        class Foo
+        {
+            constructor(@inject(IResolver) resolver: IResolver)
+            {
+                resolved = resolver === r;
+            }
+        }
+
+        let c = new Container();
+        c.register(IFoo).toClass(Foo);
+
+        using(c.beginScope(), scope =>
+        {
+            r = scope;
+            let f: Foo = scope.resolve(IFoo);
+
+            assert.ok(f);
+        });
+
+        assert.ok(resolved, "Scope did not resolve to itself.");
     }
 }
 

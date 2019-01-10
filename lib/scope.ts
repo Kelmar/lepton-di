@@ -1,7 +1,7 @@
 /* ================================================================================================================= */
 /* ================================================================================================================= */
 
-import { IScope, identitifier } from "./interfaces";
+import { IScope, identifier } from "./interfaces";
 
 import { InjectionMetadata } from "./decorators";
 import { INJECTION_METADATA } from "./consts";
@@ -14,11 +14,11 @@ import RegistrationInfo from './RegistrationInfo';
 
 export class Scope implements IScope
 {
-    private m_managed: Map<identitifier, any>;
+    private m_managed: Map<identifier, any>;
 
     constructor(readonly container: Container, readonly managedLifetime: Lifetime, readonly parent?: Scope)
     {
-        this.m_managed = new Map<identitifier, any>();
+        this.m_managed = new Map<identifier, any>();
     }
 
     public dispose(): void
@@ -35,22 +35,6 @@ export class Scope implements IScope
             disposal.apply(item);
     }
 
-    private createNew<T>(regInfo: RegistrationInfo): T
-    {
-        let params = Reflect.getOwnMetadata("design:paramtypes", regInfo.type) || [];
-
-        let ctorMetadata: InjectionMetadata = Reflect.getOwnMetadata(INJECTION_METADATA, regInfo.type);
-
-        if (ctorMetadata != null)
-            ctorMetadata.parameters.forEach((typeName, index) => params[index] = typeName);
-
-        let args = params.map((p: any) => this.resolve(p));
-
-        let rval: T = new regInfo.type(...args);
-
-        return this.buildUp(rval);
-    }
-
     private buildUpInner<T>(target: T): void
     {
         let prototype = Object.getPrototypeOf(target);
@@ -64,13 +48,16 @@ export class Scope implements IScope
 
     private manage<T>(regInfo: RegistrationInfo, target: T): void
     {
+        if (regInfo.lifetime == null)
+            return;
+
         if (regInfo.lifetime == this.managedLifetime)
             this.m_managed.set(regInfo.name, target);
         else if (this.parent != null)
             this.parent.manage(regInfo, target);
     }
 
-    private tryResolve<T>(name: identitifier): T
+    private tryResolve<T>(name: identifier): T
     {
         let rval: T = this.m_managed.get(name);
         
@@ -90,7 +77,7 @@ export class Scope implements IScope
         return target;
     }
 
-    public wireUp<T>(name: identitifier, target: T): T
+    public wireUp<T>(name: identifier, target: T): T
     {
         if (target == null)
             throw new Error("target is null");
@@ -109,7 +96,7 @@ export class Scope implements IScope
         return target;
     }
 
-    public resolve<T>(name: identitifier): T
+    public resolve<T>(name: identifier): T
     {
         let rval: T = this.tryResolve(name);
 
@@ -123,7 +110,7 @@ export class Scope implements IScope
                 throw new Error(`Symbol '${symStr}' not registered.`);
             }
 
-            rval = this.createNew(regInfo);
+            rval = regInfo.build(this);
 
             this.buildUp<T>(rval);
             this.manage(regInfo, rval);
