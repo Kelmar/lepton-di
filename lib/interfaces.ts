@@ -12,14 +12,14 @@ export interface Type<T>
 
 /* ================================================================================================================= */
 
-export interface Constructor
+export interface Factory<T>
 {
-    new(...args: any[]): any;
+    (...args: any[]): T
 }
 
 /* ================================================================================================================= */
 
-export type identitifier = symbol | Symbol | Constructor;
+export type identifier = symbol | Symbol | Type<any>;
 
 /* ================================================================================================================= */
 
@@ -38,7 +38,9 @@ export interface IDisposable
 
 export interface IRegistrationSyntax
 {
-    to<T>(type: Type<T>): IRegistrationSyntax;
+    toClass<T>(type: Type<T>): IRegistrationSyntax;
+
+    toFactory<T>(fn: Factory<T>, ...args: identifier[]): IRegistrationSyntax;
 
     with(lifetime: Lifetime): IRegistrationSyntax;
 }
@@ -69,23 +71,23 @@ export interface IResolver
      * @param name The symbol name to wire to.
      * @param target The object to have its properties injected.
      */
-    wireUp<T>(name: identitifier, target: T): T;
+    wireUp<T>(name: identifier, target: T): T;
 
     /**
      * Resolves a new or existing object of the given type.
      *
      * @param name The type to build.
      */
-    resolve<T>(name: identitifier): T;
+    resolve<T>(name: identifier): T;
 }
 
 /* ================================================================================================================= */
 
 export interface IContainer extends IDisposable
 {
-    register(name: identitifier): IRegistrationSyntax;
+    register(name: identifier): IRegistrationSyntax;
 
-    isRegistered(name: identitifier): boolean;
+    isRegistered(name: identifier): boolean;
 
     /**
      * Creates a new lifetime scope.
@@ -105,5 +107,14 @@ export interface IScope extends IResolver, IDisposable
      */
     beginScope(): IScope;
 }
+
+/* ================================================================================================================= */
+
+// Symbol defines for lepton interfaces
+export const IDisposable: unique symbol = Symbol("lepton:disposable");
+export const IRegistrationSyntax: unique symbol = Symbol("lepton:registration_syntax");
+export const IResolver: unique symbol = Symbol("lepton:resolver");
+export const IContainer: unique symbol = Symbol("lepton:container");
+export const IScope: unique symbol = Symbol("lepton:scope");
 
 /* ================================================================================================================= */

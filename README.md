@@ -45,7 +45,7 @@ class Widget
 let container = new Container();
 
 container.register(ILogger)
-    .to(ConsoleLogger)
+    .toClass(ConsoleLogger)
     .with(Lifetime.Singleton);
 
 using (container.beginScope(), scope =>
@@ -91,7 +91,7 @@ export module log
     export function configure(container: IContainer)
     {
         container.register(ILogger) // Note that this is our exported symbol, not the interface.
-            .to(ConsoleOutput)
+            .toClass(ConsoleOutput)
             .with(Lifetime.Singleton);
     }
 }
@@ -125,7 +125,7 @@ class Sprocket
 }
 ```
 
-You have two choices on how to get parameters injected into these classes.
+You have three choices on how to get parameters injected into these classes.
 
 The first is to register them like you would with an interface.
 
@@ -134,15 +134,38 @@ export module things
 {
     export function configure(container: IContainer)
     {
-        container.register(IWidget).to(Widget); // The default lifetime is transient.
+        container.register(IWidget).toClass(Widget); // The default lifetime is transient.
     }
 }
 ```
 
-The other option is to use buildUp() to inject values in an already existing object.
+Another other option is to use buildUp() to inject values in an already existing object.
 
 ```typescript
 scope.buildUp(myWidget);
+```
+
+The third option is to have the resolver get passed in as a parameter:
+
+```typescript
+class Widget
+{
+    private sprocket: ISprocket;
+
+    constructor(@inject(IResolver) resolver: IResolver)
+    {
+        this.sprocket = resolver.resolve(ISprocket);
+    }
+}
+```
+
+## Factories
+
+You can register a function or lambda as a factory method as well if you need to.
+
+```typescript
+container.register(IWidget)
+    .toFactory((sprocket) => new Widget(sprocket), ISprocket);
 ```
 
 ## Life Cycles
