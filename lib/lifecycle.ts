@@ -14,6 +14,11 @@ import { IDisposable } from "./interfaces";
 export enum Lifetime
 {
     /**
+     * Object is not managed by the framework's lifetime.
+     */
+    Unmanaged,
+
+    /**
      * A new object is created on each request to resolve().
      */
     Transient,
@@ -57,6 +62,21 @@ export function using<T extends IDisposable>(item: T, fn: (item: T) => void): vo
         if (item != null)
             item.dispose();
     }
+}
+
+/* ================================================================================================================= */
+/**
+ * Calls an object's dispose() method if found.
+ *
+ * @param item The item to call dispose on if available.
+ */
+export function maybeDispose(item: any): void
+{
+    if (item == null)
+        return;
+
+    if ((typeof item === "object") && (typeof item["dispose"] === "function"))
+        item["dispose"]();
 }
 
 /* ================================================================================================================= */
