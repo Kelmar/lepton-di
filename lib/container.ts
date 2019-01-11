@@ -73,6 +73,12 @@ class RegistrationSyntax extends RegistrationInfo implements IRegistrationSyntax
         return this;
     }
 
+    toInstance<T>(item: T)
+    {
+        this.factory = () => item;
+        return this;
+    }
+
     with(lifetime: Lifetime): IRegistrationSyntax
     {
         this.lifetime = lifetime;

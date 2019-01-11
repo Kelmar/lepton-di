@@ -42,6 +42,8 @@ export interface IRegistrationSyntax
 
     toFactory<T>(fn: Factory<T>, ...args: identifier[]): IRegistrationSyntax;
 
+    toInstance<T>(instance: T): IRegistrationSyntax;
+
     with(lifetime: Lifetime): IRegistrationSyntax;
 }
 
