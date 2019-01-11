@@ -6,7 +6,7 @@ import { IScope, identifier } from "./interfaces";
 import { InjectionMetadata } from "./decorators";
 import { INJECTION_METADATA } from "./consts";
 import { Container } from "./container";
-import { Lifetime } from "./lifecycle";
+import { Lifetime, maybeDispose } from "./lifecycle";
 
 import RegistrationInfo from './RegistrationInfo';
 
@@ -14,25 +14,22 @@ import RegistrationInfo from './RegistrationInfo';
 
 export class Scope implements IScope
 {
-    private m_managed: Map<identifier, any>;
+    private managed: Set<identifier>;
+    private cache: Map<identifier, any>;
 
     constructor(readonly container: Container, readonly managedLifetime: Lifetime, readonly parent?: Scope)
     {
-        this.m_managed = new Map<identifier, any>();
+        this.managed = new Set<identifier>();
+        this.cache = new Map<identifier, any>();
     }
 
     public dispose(): void
     {
-        this.m_managed.forEach(item => this.disposeItem(item));
-        this.m_managed = null;
-    }
+        this.managed.forEach(item => maybeDispose(this.cache.get(item)));
+        this.managed = null;
 
-    private disposeItem(item: any): void
-    {
-        let disposal: Function = item["dispose"];
-
-        if (typeof disposal === "function")
-            disposal.apply(item);
+        this.cache.clear();
+        this.cache = null;
     }
 
     private buildUpInner<T>(target: T): void
@@ -48,21 +45,28 @@ export class Scope implements IScope
 
     private manage<T>(regInfo: RegistrationInfo, target: T): void
     {
-        if (regInfo.lifetime == null)
+        this.cache.set(regInfo.name, target);
+
+        if (regInfo.lifetime == null || regInfo.lifetime == Lifetime.Unmanaged)
             return;
 
         if (regInfo.lifetime == this.managedLifetime)
-            this.m_managed.set(regInfo.name, target);
+            this.managed.add(regInfo.name);
         else if (this.parent != null)
             this.parent.manage(regInfo, target);
     }
 
     private tryResolve<T>(name: identifier): T
     {
-        let rval: T = this.m_managed.get(name);
+        let rval: T = this.cache.get(name);
         
         if (rval === null && this.parent !== null)
+        {
             rval = this.parent.tryResolve<T>(name);
+
+            if (rval !== null)
+                this.cache.set(name, rval);
+        }
 
         return rval;
     }
