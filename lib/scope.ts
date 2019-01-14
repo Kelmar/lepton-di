@@ -45,7 +45,8 @@ export class Scope implements IScope
 
     private manage<T>(regInfo: RegistrationInfo, target: T): void
     {
-        this.cache.set(regInfo.name, target);
+        if (regInfo.lifetime != Lifetime.Transient)
+            this.cache.set(regInfo.name, target);
 
         if (regInfo.lifetime == null || regInfo.lifetime == Lifetime.Unmanaged)
             return;
@@ -102,24 +103,36 @@ export class Scope implements IScope
 
     public resolve<T>(name: identifier): T
     {
-        let rval: T = this.tryResolve(name);
+        let regInfo: RegistrationInfo = this.container.getRegistration(name);
+
+        if (regInfo == null)
+        {
+            let symStr = name.toString();
+            throw new Error(`Symbol '${symStr}' not registered.`);
+        }
+
+        let rval: T;
+
+        switch (regInfo.lifetime)
+        {
+        case Lifetime.Transient:
+            rval = regInfo.build(this);
+            this.buildUp<T>(rval);
+            return rval;
+
+        default:
+            rval = this.tryResolve(name); 
+            break;
+        }
 
         if (rval == null)
         {
-            let regInfo: RegistrationInfo = this.container.getRegistration(name);
-
-            if (regInfo == null)
-            {
-                let symStr = name.toString();
-                throw new Error(`Symbol '${symStr}' not registered.`);
-            }
-
             rval = regInfo.build(this);
 
             this.buildUp<T>(rval);
             this.manage(regInfo, rval);
         }
-        
+
         return rval;
     }
 

@@ -53,7 +53,8 @@ export class ScopeTests
         let c = new Container();
         c.register(Foo).with(Lifetime.Transient);
 
-        using (c.beginScope(), scope =>{
+        using (c.beginScope(), scope =>
+        {
             let f: Foo = scope.resolve(Foo);
             assert.ok(f, "resolve() did not resolve object.");
         });
@@ -80,7 +81,8 @@ export class ScopeTests
             })
             .with(Lifetime.Transient);
 
-        using (c.beginScope(), scope =>{
+        using (c.beginScope(), scope =>
+        {
             let f: Foo = scope.resolve(IFoo);
             assert.ok(f, "resolve() did not resolve object.");
         });
@@ -122,7 +124,8 @@ export class ScopeTests
             }, IBar)
             .with(Lifetime.Transient);
 
-        using (c.beginScope(), scope =>{
+        using (c.beginScope(), scope =>
+        {
             let f: Foo = scope.resolve(IFoo);
             assert.ok(f, "resolve() did not resolve object.");
         });
@@ -132,7 +135,33 @@ export class ScopeTests
         assert.ok(fooResolved, "factory did not create a Foo object.");
     }
     
-    
+    @test
+    public transientLifetimeAlwaysCreates()
+    {
+        let calls = 0;
+
+        class Foo
+        {
+            constructor ()
+            {
+                ++calls;
+            }
+        }
+
+        let c = new Container();
+        c.register(IFoo).toClass(Foo).with(Lifetime.Transient);
+
+        using (c.beginScope(), scope =>
+        {
+            let f: Foo = scope.resolve(IFoo);
+            assert.ok(f);
+
+            f = scope.resolve(IFoo);
+            assert.ok(f);
+        });
+
+        assert.ok(2 == calls, "Did not create a new object on second call.");
+    }
 }
 
 /* ================================================================================================================= */
